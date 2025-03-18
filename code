@@ -1,0 +1,25 @@
+from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+database = []
+
+@app.route('/add', methods=['POST'])
+def add_item():
+    data = request.get_json()
+    database.append(data)
+    return jsonify({"status": "success", "message": "Item added", "database": database})
+
+@app.route('/view', methods=['GET'])
+def view_items():
+    return jsonify({"database": database})
+
+@app.route('/delete', methods=['POST'])
+def delete_item():
+    data = request.get_json()
+    if data in database:
+        database.remove(data)
+        return jsonify({"status": "success", "message": "Item deleted", "database": database})
+    return jsonify({"status": "fail", "message": "Item not found"})
+
+if __name__ == '__main__':
+    app.run(debug=True)
